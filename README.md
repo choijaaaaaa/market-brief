@@ -1,14 +1,18 @@
 # market-brief
 
 매일 한국 시간 오전 6시, 전일 미국 주식시장 주도 섹터 Top 5와 글로벌 주요 뉴스를
-자동으로 정리해서 `reports/`에 커밋하는 GitHub Actions 자동화.
+자동으로 정리해서 커밋하는 GitHub Actions 자동화. **GitHub Pages로 웹에서 바로
+한눈에 볼 수 있음** — `https://<계정>.github.io/market-brief/`.
 
 - **섹터 데이터**: SPDR 섹터 ETF 11종(XLK·XLF·XLE·XLV·XLI·XLY·XLP·XLU·XLB·XLRE·XLC)의
   전일 등락률을 [yfinance](https://github.com/ranaroussi/yfinance)로 조회(무료, API 키
   불필요) — 상위 5개를 표로 정리.
-- **뉴스**: [NewsAPI.org](https://newsapi.org) 무료 티어로 미국 상위 헤드라인 조회 —
-  API 키 필요(아래 설정 참고).
-- 결과는 `reports/<YYYY-MM-DD>.md` + `reports/latest.md`(항상 최신본)로 커밋됨.
+- **뉴스**: [NewsAPI.org](https://newsapi.org) 무료 티어로 business+general 헤드라인을
+  섞어서 조회 — API 키 필요(아래 설정 참고).
+- 결과는 두 형태로 커밋됨:
+  - `reports/<YYYY-MM-DD>.md` + `reports/latest.md` — git으로 원본 데이터 확인용
+  - `docs/index.html`(오늘) + `docs/archive/<날짜>.html` + `docs/archive/index.html`
+    (지난 리포트 목록) — GitHub Pages로 렌더링되는 실제 웹 페이지
 
 ## 최초 설정 (한 번만)
 
@@ -28,7 +32,10 @@
    Actions → New repository secret:
    - Name: `NEWS_API_KEY`
    - Value: 위에서 발급받은 키
-4. **완료** — 이후 매일 06:00(KST)에 자동 실행된다. 바로 테스트하려면 저장소의
+4. **GitHub Pages 활성화** — 저장소 → Settings → Pages → "Build and deployment" →
+   Source: **Deploy from a branch**, Branch: **main** / **`/docs`** 선택 → Save.
+   저장 후 잠깐 기다리면 `https://<계정>.github.io/market-brief/`에서 바로 보임.
+5. **완료** — 이후 매일 06:00(KST)에 자동 실행된다. 바로 테스트하려면 저장소의
    Actions 탭 → "Daily Market Brief" → "Run workflow"(수동 실행 버튼)로 즉시 확인 가능.
 
 ## 로컬에서 직접 실행
@@ -45,4 +52,5 @@ python3 scripts/generate_report.py
 - 뉴스 소스·개수: `scripts/fetch_news.py`의 `PARAMS`(NewsAPI top-headlines 파라미터,
   `country`를 다른 국가로 바꾸거나 `category` 조정 가능)
 - 실행 시각: `.github/workflows/daily-report.yml`의 `cron`(UTC 기준 — KST는 UTC+9)
-- 리포트 포맷: `scripts/generate_report.py`의 `build_markdown()`
+- 마크다운 포맷: `scripts/generate_report.py`의 `build_markdown()`
+- 웹 페이지(HTML) 디자인·레이아웃: `scripts/render_html.py`

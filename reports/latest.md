@@ -12,11 +12,11 @@
 
 ## 글로벌 주요 뉴스
 
-- [Stock Market Today: Dow surges 600 points toward a record high, S&P 500 and Nasdaq also rise; oil prices, Treasury yields fall on signs of U.S.-Iran war de-escalation; Palantir earnings on tap - marketwatch.com](https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-oil-signs-deescalation-us-iran-war-pmi-palantir) (MarketWatch)
-- [GOP AGs warn OpenAI's Altman to preserve records in AI agent hacking probe - Fox Business](https://www.foxbusiness.com/technology/gop-ags-warn-openai-altman-preserve-records-ai-agent-hacking-probe) (Fox Business)
-- [Cornyn and Tillis back Blanche for attorney general after deal on "anti-weaponization" fund - CBS News](https://www.cbsnews.com/news/cornyn-tillis-todd-blanche-attorney-general-nomination/) (CBS News)
-- [Why Did 60,000 Migrants Cross from Morocco into Spain’s Ceuta? Moroccan Dutch Professor Explains - Democracy Now!](https://www.democracynow.org/2026/8/3/moroccans_leave_ceuta) (Democracy Now!)
-- [Washington state fires destroy hundreds of structures and force Spokane-area residents to evacuate - AP News](https://apnews.com/article/wildfire-spokane-washington-evacuate-8e42b37783bda01e7d004d71e546458e) (Associated Press)
-- [FAA certifies Boeing’s 737 MAX 7, its smallest MAX model - The Seattle Times](https://www.seattletimes.com/business/boeing-aerospace/faa-certifies-boeings-737-max-7-its-smallest-max-model/) (The Seattle Times)
-- [Iran rejects Trump’s claim that talks will restart, adding to weekend of whiplash - washingtonpost.com](https://www.washingtonpost.com/world/2026/08/02/trump-cancels-iran-attack-citing-progress-deal-tehran-israel-alert/) (The Washington Post)
-- [States sue to shield anti-poverty program data from DHS - Politico](https://www.politico.com/news/2026/08/03/states-lawsuit-anti-poverty-data-dhs-01022205) (Politico)
+- [SpaceX's first-ever earnings report comes as stock hits new all-time low: Q2 preview - Yahoo Finance](https://finance.yahoo.com/technology/article/spacexs-first-ever-earnings-report-comes-as-stock-hits-new-all-time-low-q2-preview-132323178.html) (Yahoo Entertainment)
+- [Palantir Q2 on deck: Options market imply 9.3% swing after earnings (PLTR:NASDAQ) - Seeking Alpha](https://seekingalpha.com/news/4623855-palantir-q2-on-deck-options-market-imply-93-swing-after-earnings) (Seeking Alpha)
+- [Trump Hits Exxon, Chevron for Profits Amid Iran War He Launched - Bloomberg](https://www.bloomberg.com/news/articles/2026-08-03/trump-hits-exxon-chevron-for-profits-amid-iran-war-he-launched) (Bloomberg)
+- [Michigan reports 2 deaths in cyclosporiasis outbreak - NBC News](https://www.nbcnews.com/health/health-news/cyclospora-outbreak-michigan-two-deaths-parasite-dehydration-rcna590612) (NBC News)
+- [Kevin Feige on Spider-Man Brand New Day Success, Tom Holland Sequel - Variety](https://variety.com/2026/film/news/kevin-feige-spider-man-brand-new-day-sequel-tom-holland-1236826503/) (Variety)
+- [Ethics panel urges censure of Rep. Chuck Edwards over sexual harassment violation - axios.com](https://www.axios.com/2026/08/03/chuck-edwards-house-ethics-sexual-harassment) (Axios)
+- [Ripple effects: After Hearn, three others have their Reflecting Pool charges dropped - NPR](https://www.npr.org/2026/08/03/nx-s1-5918001/reflecting-pool-vandalism-charges-dropped) (NPR)
+- [Trump calls Iranian leadership ‘extremely duplicitous’ after Tehran denies new talks will start Monday - NBC News](https://www.nbcnews.com/world/iran/trump-iran-talks-attacks-canceled-hormuz-nuclear-rcna590535) (NBC News)

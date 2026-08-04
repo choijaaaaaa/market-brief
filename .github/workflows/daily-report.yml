@@ -31,7 +31,7 @@ jobs:
         run: |
           git config user.name "market-brief-bot"
           git config user.email "actions@github.com"
-          git add reports/
+          git add reports/ docs/
           if git diff --cached --quiet; then
             echo "변경 없음 — 커밋 스킵"
           else

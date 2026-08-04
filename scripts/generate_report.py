@@ -8,6 +8,7 @@ from pathlib import Path
 
 from fetch_news import fetch_top_news
 from fetch_sectors import fetch_sector_changes
+from render_html import write_pages
 
 KST = timezone(timedelta(hours=9))
 REPORTS_DIR = Path(__file__).resolve().parent.parent / "reports"
@@ -81,7 +82,14 @@ def main() -> None:
     (REPORTS_DIR / f"{report_date}.md").write_text(markdown, encoding="utf-8")
     if not args.no_latest:
         (REPORTS_DIR / "latest.md").write_text(markdown, encoding="utf-8")
-    print(f"리포트 생성 완료: reports/{report_date}.md")
+
+    # WHY UI(GitHub Pages)도 마크다운과 같이 갱신하는지(2026-08-05, "ui 접근하면
+    # 한눈에 볼수있게 잘해놔야지" 지적): 마크다운만 repo에 던져두면 파일을
+    # 하나씩 열어봐야 해서 "한눈에 보기"가 안 됐다 — docs/index.html(오늘) +
+    # docs/archive/(과거 회차 전체)를 매 실행마다 같이 만든다.
+    write_pages(sectors, news, report_date, is_latest=not args.no_latest)
+
+    print(f"리포트 생성 완료: reports/{report_date}.md, docs/archive/{report_date}.html")
 
 
 if __name__ == "__main__":
