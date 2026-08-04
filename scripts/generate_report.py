@@ -49,10 +49,20 @@ def build_markdown(
         lines.append("_섹터 데이터를 가져오지 못했습니다._")
     lines.append("")
 
-    lines.append("## 주요 종목")
+    lines.append("## 주요 종목 (섹터별)")
     lines.append("")
     if watchlist:
-        lines += _pct_table(watchlist, "name_ko", "symbol")
+        lines.append("| 종목 | 소속 섹터 | 종목 등락률 | 섹터 전체 등락률 |")
+        lines.append("|---|---|---|---|")
+        for w in watchlist:
+            sign = "+" if w["pct_change"] >= 0 else ""
+            sector_pct = w.get("sector_pct")
+            sector_sign = "+" if (sector_pct is not None and sector_pct >= 0) else ""
+            sector_cell = f"{sector_sign}{sector_pct}%" if sector_pct is not None else "—"
+            lines.append(
+                f"| {w['name_ko']}({w['symbol']}) | {w['sector_name_ko']} | "
+                f"{sign}{w['pct_change']}% | {sector_cell} |"
+            )
     else:
         lines.append("_종목 데이터를 가져오지 못했습니다._")
     lines.append("")
@@ -99,7 +109,13 @@ def main() -> None:
         sectors = []
 
     try:
-        watchlist = fetch_watchlist(as_of=args.date)
+        # WHY sector_pct_by_etf를 넘기는지(2026-08-05, "각 종목이 어떤 섹터에
+        # 해당하는지, 그 섹터의 전체 등락 %가 어떻게되었는지도... 어떤 섹터가
+        # 주목을 받았는지가 궁금해서"): 위에서 이미 구한 섹터 등락률(전체 11개,
+        # sectors는 top5로 자르기 전 원본)을 종목별로 매칭시켜서, 종목이
+        # 소속 섹터 성과와 같이 정렬·표시되게 한다.
+        sector_pct_by_etf = {s["ticker"]: s["pct_change"] for s in sectors}
+        watchlist = fetch_watchlist(as_of=args.date, sector_pct_by_etf=sector_pct_by_etf)
     except Exception as e:
         print(f"주요 종목 수집 실패: {e}", file=sys.stderr)
         watchlist = []

@@ -78,6 +78,36 @@ def _pct_rows(rows: list[dict], name_key: str, sub_key: str, empty_msg: str, lim
     )
 
 
+def _watchlist_rows(rows: list[dict]) -> str:
+    """종목명 옆에 소속 섹터 + 그 섹터 전체 등락률까지 같이 보여준다
+    (2026-08-05, "각 종목이 어떤 섹터에 해당하는지, 그 섹터의 전체 등락 %가
+    어떻게되었는지도... 어떤 섹터가 주목을 받았는지가 궁금해서") — 섹터
+    등락률 큰 순으로 이미 정렬돼서 오므로(fetch_movers.fetch_watchlist),
+    위에서부터 훑으면 어느 섹터가 오늘 주목받았는지 바로 보인다."""
+    if not rows:
+        return '<p class="empty">종목 데이터를 가져오지 못했습니다.</p>'
+    trs = []
+    for r in rows:
+        cls = "up" if r["pct_change"] >= 0 else "down"
+        sign = "+" if r["pct_change"] >= 0 else ""
+        sector_pct = r.get("sector_pct")
+        if sector_pct is not None:
+            s_cls = "up" if sector_pct >= 0 else "down"
+            s_sign = "+" if sector_pct >= 0 else ""
+            sector_cell = f'<span class="pct {s_cls}" style="font-size:12px">{s_sign}{sector_pct}%</span>'
+        else:
+            sector_cell = "—"
+        trs.append(
+            f'<tr><td>{r["name_ko"]}<span class="ticker" style="display:block">{r["symbol"]}</span></td>'
+            f'<td class="ticker">{r["sector_name_ko"]}<br>{sector_cell}</td>'
+            f'<td class="pct {cls}">{sign}{r["pct_change"]}%</td></tr>'
+        )
+    return (
+        '<table><thead><tr><th>종목</th><th>섹터(전체)</th><th style="text-align:right">등락률</th>'
+        f"</tr></thead><tbody>{''.join(trs)}</tbody></table>"
+    )
+
+
 def _news_items(news: list[dict]) -> str:
     if not news:
         return '<p class="empty">뉴스를 가져오지 못했습니다.</p>'
@@ -122,8 +152,8 @@ def render_page(
   {_pct_rows(sectors, "name_ko", "ticker", "섹터 데이터를 가져오지 못했습니다.", limit=5)}
 </section>
 <section>
-  <h2>주요 종목</h2>
-  {_pct_rows(watchlist, "name_ko", "symbol", "종목 데이터를 가져오지 못했습니다.")}
+  <h2>주요 종목 (섹터별)</h2>
+  {_watchlist_rows(watchlist)}
 </section>
 <section>
   <h2>글로벌 주요 뉴스</h2>
