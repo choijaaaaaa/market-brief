@@ -47,6 +47,7 @@ tr:last-child td { border-bottom: none; }
 .news-list li:last-child { border-bottom: none; }
 .news-list a { color: var(--ink); text-decoration: none; font-size: 15px; line-height: 1.4; }
 .news-list a:hover { color: var(--accent); }
+.news-en { display: block; color: var(--ink-soft); font-size: 12px; margin-top: 2px; }
 .news-source { display: block; color: var(--ink-soft); font-size: 12px; margin-top: 3px; }
 .empty { color: var(--ink-soft); font-size: 14px; }
 footer { text-align: center; color: var(--ink-soft); font-size: 12px; margin-top: 24px; }
@@ -59,21 +60,21 @@ footer a { color: var(--accent); }
 """
 
 
-def _sector_rows(sectors: list[dict]) -> str:
-    if not sectors:
-        return '<p class="empty">섹터 데이터를 가져오지 못했습니다.</p>'
-    rows = []
-    for i, s in enumerate(sectors[:5], 1):
-        cls = "up" if s["pct_change"] >= 0 else "down"
-        sign = "+" if s["pct_change"] >= 0 else ""
-        rows.append(
-            f'<tr><td class="rank">{i}</td><td>{s["name_ko"]}</td>'
-            f'<td class="ticker">{s["ticker"]}</td>'
-            f'<td class="pct {cls}">{sign}{s["pct_change"]}%</td></tr>'
+def _pct_rows(rows: list[dict], name_key: str, sub_key: str, empty_msg: str, limit: int | None = None) -> str:
+    if not rows:
+        return f'<p class="empty">{empty_msg}</p>'
+    shown = rows[:limit] if limit else rows
+    trs = []
+    for r in shown:
+        cls = "up" if r["pct_change"] >= 0 else "down"
+        sign = "+" if r["pct_change"] >= 0 else ""
+        trs.append(
+            f'<tr><td>{r[name_key]}</td><td class="ticker">{r[sub_key]}</td>'
+            f'<td class="pct {cls}">{sign}{r["pct_change"]}%</td></tr>'
         )
     return (
-        '<table><thead><tr><th></th><th>섹터</th><th></th><th style="text-align:right">등락률</th>'
-        f"</tr></thead><tbody>{''.join(rows)}</tbody></table>"
+        '<table><thead><tr><th></th><th></th><th style="text-align:right">등락률</th>'
+        f"</tr></thead><tbody>{''.join(trs)}</tbody></table>"
     )
 
 
@@ -83,11 +84,21 @@ def _news_items(news: list[dict]) -> str:
     items = []
     for n in news:
         source = f'<span class="news-source">{n["source"]}</span>' if n["source"] else ""
-        items.append(f'<li><a href="{n["url"]}" target="_blank" rel="noopener">{n["title"]}</a>{source}</li>')
+        title_ko = n.get("title_ko") or n["title"]
+        # WHY 영어 원문도 작게 같이 보여주는지: 기계번역이 가끔 어색할 수
+        # 있어서(2026-08-05, "축약해서 브리핑을 해줘야 의미가 있지" 반영 —
+        # MyMemory 무료 번역), 원문을 작은 글씨로 남겨 대조 가능하게 한다.
+        items.append(
+            f'<li><a href="{n["url"]}" target="_blank" rel="noopener">{title_ko}</a>'
+            f'<span class="news-en">{n["title"]}</span>{source}</li>'
+        )
     return f'<ul class="news-list">{"".join(items)}</ul>'
 
 
-def render_page(sectors: list[dict], news: list[dict], report_date: str, nav_html: str) -> str:
+def render_page(
+    indices: list[dict], sectors: list[dict], watchlist: list[dict], news: list[dict],
+    report_date: str, nav_html: str,
+) -> str:
     return f"""<!doctype html>
 <html lang="ko">
 <head>
@@ -103,8 +114,16 @@ def render_page(sectors: list[dict], news: list[dict], report_date: str, nav_htm
   <div class="nav">{nav_html}</div>
 </header>
 <section>
+  <h2>주요 지수</h2>
+  {_pct_rows(indices, "name_ko", "symbol", "지수 데이터를 가져오지 못했습니다.")}
+</section>
+<section>
   <h2>전일 미국 주식시장 주도 섹터 Top 5</h2>
-  {_sector_rows(sectors)}
+  {_pct_rows(sectors, "name_ko", "ticker", "섹터 데이터를 가져오지 못했습니다.", limit=5)}
+</section>
+<section>
+  <h2>주요 종목</h2>
+  {_pct_rows(watchlist, "name_ko", "symbol", "종목 데이터를 가져오지 못했습니다.")}
 </section>
 <section>
   <h2>글로벌 주요 뉴스</h2>
@@ -141,10 +160,13 @@ def render_archive_index(dates: list[str]) -> str:
 """
 
 
-def write_pages(sectors: list[dict], news: list[dict], report_date: str, *, is_latest: bool) -> None:
+def write_pages(
+    indices: list[dict], sectors: list[dict], watchlist: list[dict], news: list[dict],
+    report_date: str, *, is_latest: bool,
+) -> None:
     ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
 
-    archive_page = render_page(sectors, news, report_date, '<a href="../">← 오늘 리포트로</a>')
+    archive_page = render_page(indices, sectors, watchlist, news, report_date, '<a href="../">← 오늘 리포트로</a>')
     (ARCHIVE_DIR / f"{report_date}.html").write_text(archive_page, encoding="utf-8")
 
     # WHY 파일명(날짜) 기준으로 다시 스캔하는지: 매 실행마다 그 시점까지 쌓인
@@ -155,5 +177,5 @@ def write_pages(sectors: list[dict], news: list[dict], report_date: str, *, is_l
 
     if is_latest:
         DOCS_DIR.mkdir(parents=True, exist_ok=True)
-        latest_page = render_page(sectors, news, report_date, '<a href="archive/">지난 리포트 보기 →</a>')
+        latest_page = render_page(indices, sectors, watchlist, news, report_date, '<a href="archive/">지난 리포트 보기 →</a>')
         (DOCS_DIR / "index.html").write_text(latest_page, encoding="utf-8")

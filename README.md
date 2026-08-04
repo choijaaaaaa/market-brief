@@ -1,14 +1,20 @@
 # market-brief
 
-매일 한국 시간 오전 6시, 전일 미국 주식시장 주도 섹터 Top 5와 글로벌 주요 뉴스를
-자동으로 정리해서 커밋하는 GitHub Actions 자동화. **GitHub Pages로 웹에서 바로
-한눈에 볼 수 있음** — `https://<계정>.github.io/market-brief/`.
+매일 한국 시간 오전 6시, 미국 주요 지수·섹터 Top 5·주요 종목(빅테크+반도체
+워치리스트) 등락률과 글로벌 주요 뉴스(한국어 번역 포함)를 자동으로 정리해서
+커밋하는 GitHub Actions 자동화. **GitHub Pages로 웹에서 바로 한눈에 볼 수 있음**
+— `https://<계정>.github.io/market-brief/`.
 
+- **주요 지수**: S&P 500·나스닥종합·다우존스 전일 등락률.
 - **섹터 데이터**: SPDR 섹터 ETF 11종(XLK·XLF·XLE·XLV·XLI·XLY·XLP·XLU·XLB·XLRE·XLC)의
-  전일 등락률을 [yfinance](https://github.com/ranaroussi/yfinance)로 조회(무료, API 키
-  불필요) — 상위 5개를 표로 정리.
+  전일 등락률 상위 5개.
+- **주요 종목**: 빅테크(AAPL·MSFT·GOOGL·AMZN·META·NVDA·TSLA) + 반도체·화제성
+  종목(PLTR·AMD·AVGO·TSM·INTC) 워치리스트, 등락률 큰 순.
+  (위 세 가지 전부 [yfinance](https://github.com/ranaroussi/yfinance)로 조회 — 무료,
+  API 키 불필요)
 - **뉴스**: [NewsAPI.org](https://newsapi.org) 무료 티어로 business+general 헤드라인을
-  섞어서 조회 — API 키 필요(아래 설정 참고).
+  섞어서 조회한 뒤 [MyMemory](https://mymemory.translated.net)로 한국어 번역까지 —
+  둘 다 API 키 필요(아래 설정 참고, MyMemory는 키 발급 자체가 없이 무료).
 - 결과는 두 형태로 커밋됨:
   - `reports/<YYYY-MM-DD>.md` + `reports/latest.md` — git으로 원본 데이터 확인용
   - `docs/index.html`(오늘) + `docs/archive/<날짜>.html` + `docs/archive/index.html`
@@ -49,8 +55,10 @@ python3 scripts/generate_report.py
 ## 커스터마이징
 
 - 섹터 티커/한글명 매핑: `scripts/fetch_sectors.py`의 `SECTOR_ETFS`
-- 뉴스 소스·개수: `scripts/fetch_news.py`의 `PARAMS`(NewsAPI top-headlines 파라미터,
-  `country`를 다른 국가로 바꾸거나 `category` 조정 가능)
+- 지수·주요 종목 워치리스트: `scripts/fetch_movers.py`의 `INDICES`/`WATCHLIST`
+- 뉴스 소스·개수: `scripts/fetch_news.py`의 `TOP_HEADLINES_PARAMS_BY_CATEGORY`
+  (NewsAPI top-headlines 파라미터, `country`를 다른 국가로 바꾸거나 `category` 조정 가능)
+- 뉴스 번역: `scripts/translate.py`(MyMemory 무료 API, 다른 번역 서비스로 교체 가능)
 - 실행 시각: `.github/workflows/daily-report.yml`의 `cron`(UTC 기준 — KST는 UTC+9)
 - 마크다운 포맷: `scripts/generate_report.py`의 `build_markdown()`
 - 웹 페이지(HTML) 디자인·레이아웃: `scripts/render_html.py`
